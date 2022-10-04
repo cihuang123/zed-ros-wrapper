@@ -19,14 +19,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <launch>
     <arg name="svo_file"             default="" /> <!-- <arg name="svo_file" default="path/to/svo/file.svo"> -->
     <arg name="stream"               default="" /> <!-- <arg name="stream" default="<ip_address>:<port>"> -->
-
+    <arg name="veh"                  default="wamv"           />
     <arg name="node_name"            default="zed_node" />
     <arg name="camera_model"         default="zed" /> <!-- 'zed' or 'zedm' -->
     <arg name="publish_urdf"         default="true" />
 
-    <arg name="camera_name"          default="zed" />
+    <arg name="camera_name"          default="zed_mid" />
 
-    <arg name="base_frame"           default="base_link" />
+    <arg name="base_frame"           default="zed_mid_link" />
 
     <arg name="cam_pos_x"             default="0.0" /> <!-- Position respect to base frame (i.e. "base_link) -->
     <arg name="cam_pos_y"             default="0.0" /> <!-- Position respect to base frame (i.e. "base_link) -->
@@ -35,21 +35,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <arg name="cam_pitch"             default="0.0" /> <!-- Orientation respect to base frame (i.e. "base_link) -->
     <arg name="cam_yaw"               default="0.0" /> <!-- Orientation respect to base frame (i.e. "base_link) -->
 
-    <group ns="$(arg camera_name)">
-        <include file="$(find zed_wrapper)/launch/include/zed_camera.launch.xml">
-            <arg name="camera_name"         value="$(arg camera_name)" />
-            <arg name="svo_file"            value="$(arg svo_file)" />
-            <arg name="stream"              value="$(arg stream)" />
-            <arg name="node_name"           value="$(arg node_name)" />
-            <arg name="camera_model"        value="$(arg camera_model)" />
-            <arg name="base_frame"          value="$(arg base_frame)" />
-            <arg name="publish_urdf"        value="$(arg publish_urdf)" />
-            <arg name="cam_pos_x"           value="$(arg cam_pos_x)" />
-            <arg name="cam_pos_y"           value="$(arg cam_pos_y)" />
-            <arg name="cam_pos_z"           value="$(arg cam_pos_z)" />
-            <arg name="cam_roll"            value="$(arg cam_roll)" />
-            <arg name="cam_pitch"           value="$(arg cam_pitch)" />
-            <arg name="cam_yaw"             value="$(arg cam_yaw)" />
-        </include>
+    <group ns="$(arg veh)">
+        <group ns="$(arg camera_name)">
+            <include file="$(find zed_wrapper)/launch/include/zed_camera.launch.xml">
+                <arg name="camera_name"         value="$(arg camera_name)" />
+                <arg name="svo_file"            value="$(arg svo_file)" />
+                <arg name="stream"              value="$(arg stream)" />
+                <arg name="node_name"           value="$(arg node_name)" />
+                <arg name="camera_model"        value="$(arg camera_model)" />
+                <arg name="base_frame"          value="$(arg base_frame)" />
+                <arg name="publish_urdf"        value="$(arg publish_urdf)" />
+                <arg name="cam_pos_x"           value="$(arg cam_pos_x)" />
+                <arg name="cam_pos_y"           value="$(arg cam_pos_y)" />
+                <arg name="cam_pos_z"           value="$(arg cam_pos_z)" />
+                <arg name="cam_roll"            value="$(arg cam_roll)" />
+                <arg name="cam_pitch"           value="$(arg cam_pitch)" />
+                <arg name="cam_yaw"             value="$(arg cam_yaw)" />
+            </include>
+        </group>
     </group>
+    <!-- Define a static transform from a camera internal frame to the fcu for every camera used -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="tf_mid_zed_camera"
+          args="0 0 0 0 0 0 zed_mid_link zed_camera_mid_link 10"/> -->
 </launch>
